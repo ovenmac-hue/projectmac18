@@ -20,22 +20,87 @@ string toUpperStr(string x){
     return y;
 }
 
-void importDataFromFile(){
+void importDataFromFile(string f,
+                        vector<string>& n,
+                        vector<int>& s,
+                        vector<char>& g){
+    ifstream filetext(f);
+    string textline;
+    while(getline(filetext,textline)){
+        size_t pos = textline.find(':');
 
+        string name = textline.substr(0, pos);
+        string scorePart = textline.substr(pos + 1);
+
+        int s1, s2, s3;
+        sscanf(scorePart.c_str(), "%d %d %d", &s1, &s2, &s3);
+
+        int total = s1 + s2 + s3;
+
+        n.push_back(name);
+        s.push_back(total);
+        g.push_back(score2grade(total));
+    }
+
+    filetext.close();
 }
 
-void getCommand(){
+void getCommand(string &command, string &key){
+    cout << "Please input your command:\n";
 
+    string line;
+    getline(cin, line);
+
+    // แยกคำสั่งกับ key
+    size_t pos = line.find(' ');
+
+    if(pos == string::npos){
+        command = line;
+        key = "";
+    }else{
+        command = line.substr(0, pos);
+        key = line.substr(pos + 1);
+    }
 }
 
-void searchName(){
 
+void searchName(vector<string>&n,
+                vector<int>& s,
+                vector<char>& g,
+                string k){
+    cout << "---------------------------------\n";
+    bool found = false;
+    for (unsigned i = 0 ; i < n.size();i++){
+        if(toUpperStr(n[i]) == toUpperStr(k) ){
+            cout << n[i] << "'s score = " << s[i] << endl ;
+            cout << n[i] << "'s grade = " << g[i] << endl ;
+            found = true;
+            break;
+        }
+    }
+    if (!found){
+        cout << "Cannot found.\n";
+    }
+    cout << "---------------------------------\n";
+    
 }
 
-void searchGrade(){
+void searchGrade(vector<string> &names, vector<int> &scores, vector<char> &grades, string key){
+    cout << "---------------------------------\n";
+    bool found = false;
+    char target = key[0];
+    for (unsigned i = 0 ; i < grades.size();i++){
+        if(grades[i] == target){
+            cout << names[i] << " " << "(" << scores[i] << ")" << endl ;
+            found = true;
+        }
+    }
+    if (!found){
+        cout << "Cannot found.\n";
+    }
+    cout << "---------------------------------\n";
 
 }
-
 
 int main(){
     string filename = "name_score.txt";
